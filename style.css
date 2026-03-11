@@ -165,6 +165,25 @@ body {
   letter-spacing: -0.01em;
 }
 
+.sidebar-page-link {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: var(--text);
+  padding: 8px 14px 6px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.sidebar-page-link:hover {
+  color: var(--text-secondary);
+}
+
+.sidebar-page-link.active {
+  font-weight: 500;
+}
+
 /* Collapsible folder */
 .sidebar-folder-toggle {
   font-size: 0.8125rem;
@@ -809,6 +828,11 @@ body {
 @media (max-width: 768px) {
   .header {
     padding: 0 24px;
+  }
+
+  /* Hide header nav on mobile — navigation moves to sidebar drawer */
+  .header-nav {
+    display: none;
   }
 
   /* Hamburger visible on mobile */
