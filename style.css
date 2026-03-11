@@ -31,6 +31,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 body {
@@ -745,6 +746,12 @@ body {
   .main {
     margin-left: 0;
     padding: 48px 24px 100px;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .layout {
+    overflow-x: hidden;
   }
 
   .footer {
@@ -875,6 +882,38 @@ body {
   color: var(--text);
 }
 
+/* Journal tables */
+.journal-entry table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin: 20px 0;
+}
+
+.journal-entry table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.journal-entry table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.journal-entry table td strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
 /* Responsive journal */
 @media (max-width: 768px) {
   .journal-header h1 {
@@ -883,5 +922,15 @@ body {
 
   .journal-header {
     margin-bottom: 48px;
+  }
+
+  .journal-entry table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .main-inner {
+    max-width: 100%;
   }
 }
