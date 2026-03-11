@@ -994,9 +994,13 @@ body {
   max-width: 540px;
 }
 
-/* Journal sidebar date labels */
+/* Journal sidebar — date stacked above entry title */
+.sidebar-section-header:has(.journal-date) {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .journal-date {
-  display: block;
   font-size: 0.6875rem;
   font-weight: 500;
   color: var(--text-muted);
