@@ -104,6 +104,30 @@ body {
   font-weight: 500;
 }
 
+/* Hamburger menu — hidden on desktop */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--text);
+  transition: all 0.3s ease;
+}
+
+/* Sidebar backdrop — only used on mobile */
+.sidebar-backdrop {
+  display: none;
+}
+
 /* ==========================================================================
    Layout — Sidebar + Main (index page)
    ========================================================================== */
@@ -787,8 +811,62 @@ body {
     padding: 0 24px;
   }
 
+  /* Hamburger visible on mobile */
+  .menu-toggle {
+    display: flex;
+  }
+
+  /* Sidebar as slide-in drawer from right */
   .sidebar {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -280px;
+    left: auto;
+    width: 280px;
+    height: 100vh;
+    padding: 80px 20px 40px 28px;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    border-right: none;
+    z-index: 200;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .sidebar.open {
+    right: 0;
+  }
+
+  /* Backdrop overlay */
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-backdrop.visible {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Hamburger → X animation */
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(4.5px, 4.5px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(4.5px, -4.5px);
   }
 
   .main {
@@ -839,7 +917,7 @@ body {
 
 @media (max-width: 480px) {
   .header {
-    padding: 0 16px;
+    padding: 0 24px;
   }
 
   .hero h1 {
@@ -847,7 +925,7 @@ body {
   }
 
   .main {
-    padding: 40px 16px 80px;
+    padding: 40px 24px 80px;
   }
 
   .behavior-item {
