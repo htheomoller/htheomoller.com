@@ -23,45 +23,53 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <nav class="sidebar-nav">
-        <div class="sidebar-tree-label">murmur</div>
-        <div class="sidebar-tree">
-          <!-- Operating Concept (expanded on this page) -->
-          <div class="sidebar-section expanded">
-            <a class="sidebar-section-header" data-section="concept">
-              Operating Concept <span class="chevron">&#x25BE;</span>
-            </a>
-            <div class="sidebar-chapters">
-              <a href="#abstract"><span class="nav-number"></span> Abstract</a>
-              <a href="#problem"><span class="nav-number">01</span> The Problem</a>
-              <a href="#medium"><span class="nav-number">02</span> The Medium</a>
-              <a href="#memory"><span class="nav-number">03</span> The Memory</a>
-              <a href="#bridge"><span class="nav-number">04</span> The Bridge</a>
-              <a href="#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
-              <a href="#model"><span class="nav-number">06</span> The Model</a>
-              <a href="#universality"><span class="nav-number">07</span> Universality</a>
-              <a href="#not"><span class="nav-number">08</span> What It Is Not</a>
-              <a href="#conclusion"><span class="nav-number">09</span> Conclusion</a>
-              <a href="#references"><span class="nav-number"></span> References</a>
-            </div>
-          </div>
-
-          <!-- Architecture (collapsed on this page) -->
-          <div class="sidebar-section">
-            <a class="sidebar-section-header" data-section="technical">
-              Architecture <span class="chevron">&#x25BE;</span>
-            </a>
-            <div class="sidebar-chapters">
-              <a href="technical.html#abstract"><span class="nav-number"></span> Abstract</a>
-              <a href="technical.html#pipeline"><span class="nav-number">01</span> The pipeline</a>
-              <a href="technical.html#stack"><span class="nav-number">02</span> The stack</a>
-              <a href="technical.html#multitenant"><span class="nav-number">03</span> Multi-tenant</a>
-              <a href="technical.html#memory"><span class="nav-number">04</span> Memory engine</a>
-              <a href="technical.html#personality"><span class="nav-number">05</span> Personality</a>
-              <a href="technical.html#trace"><span class="nav-number">06</span> Message trace</a>
-              <a href="technical.html#byok"><span class="nav-number">07</span> BYOK</a>
-              <a href="technical.html#security"><span class="nav-number">08</span> Security</a>
-              <a href="technical.html#degradation"><span class="nav-number">09</span> Degradation</a>
-              <a href="technical.html#build"><span class="nav-number">10</span> Build order</a>
+        <div class="sidebar-folder-toggle" data-folder="projects">
+          Projects <span class="chevron">&#x25BE;</span>
+        </div>
+        <div class="sidebar-folder-content">
+          <div class="sidebar-tree">
+            <div class="sidebar-section expanded">
+              <a class="sidebar-section-header" href="murmur.html">
+                Murmur <span class="chevron">&#x25BE;</span>
+              </a>
+              <div class="sidebar-chapters">
+                <div class="sidebar-section expanded">
+                  <a class="sidebar-section-header" data-section="concept">
+                    Operating Concept <span class="chevron">&#x25BE;</span>
+                  </a>
+                  <div class="sidebar-chapters">
+                    <a href="#abstract"><span class="nav-number"></span> Abstract</a>
+                    <a href="#problem"><span class="nav-number">01</span> The Problem</a>
+                    <a href="#medium"><span class="nav-number">02</span> The Medium</a>
+                    <a href="#memory"><span class="nav-number">03</span> The Memory</a>
+                    <a href="#bridge"><span class="nav-number">04</span> The Bridge</a>
+                    <a href="#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
+                    <a href="#model"><span class="nav-number">06</span> The Model</a>
+                    <a href="#universality"><span class="nav-number">07</span> Universality</a>
+                    <a href="#not"><span class="nav-number">08</span> What It Is Not</a>
+                    <a href="#conclusion"><span class="nav-number">09</span> Conclusion</a>
+                    <a href="#references"><span class="nav-number"></span> References</a>
+                  </div>
+                </div>
+                <div class="sidebar-section">
+                  <a class="sidebar-section-header" data-section="technical">
+                    Architecture <span class="chevron">&#x25BE;</span>
+                  </a>
+                  <div class="sidebar-chapters">
+                    <a href="technical.html#abstract"><span class="nav-number"></span> Abstract</a>
+                    <a href="technical.html#pipeline"><span class="nav-number">01</span> The pipeline</a>
+                    <a href="technical.html#stack"><span class="nav-number">02</span> The stack</a>
+                    <a href="technical.html#multitenant"><span class="nav-number">03</span> Multi-tenant</a>
+                    <a href="technical.html#memory"><span class="nav-number">04</span> Memory engine</a>
+                    <a href="technical.html#personality"><span class="nav-number">05</span> Personality</a>
+                    <a href="technical.html#trace"><span class="nav-number">06</span> Message trace</a>
+                    <a href="technical.html#byok"><span class="nav-number">07</span> BYOK</a>
+                    <a href="technical.html#security"><span class="nav-number">08</span> Security</a>
+                    <a href="technical.html#degradation"><span class="nav-number">09</span> Degradation</a>
+                    <a href="technical.html#build"><span class="nav-number">10</span> Build order</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -536,8 +544,15 @@
     }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Sidebar expand/collapse
-    document.querySelectorAll('.sidebar-section-header').forEach(header => {
+    // Sidebar folder toggle
+    document.querySelectorAll('.sidebar-folder-toggle').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        toggle.classList.toggle('collapsed');
+      });
+    });
+
+    // Sidebar expand/collapse (only for headers without href)
+    document.querySelectorAll('.sidebar-section-header[data-section]').forEach(header => {
       header.addEventListener('click', (e) => {
         e.preventDefault();
         header.parentElement.classList.toggle('expanded');

@@ -141,6 +141,40 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* Collapsible folder */
+.sidebar-folder-toggle {
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: var(--text);
+  padding: 8px 14px 6px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.sidebar-folder-toggle .chevron {
+  font-size: 0.5rem;
+  transition: transform 0.2s ease;
+  opacity: 0.4;
+}
+
+.sidebar-folder-toggle.collapsed .chevron {
+  transform: rotate(-90deg);
+}
+
+.sidebar-folder-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+
+.sidebar-folder-toggle.collapsed + .sidebar-folder-content {
+  max-height: 0 !important;
+  opacity: 0;
+}
+
 /* Tree container with vertical trunk */
 .sidebar-tree {
   position: relative;
@@ -239,7 +273,7 @@ body {
 }
 
 .sidebar-section.expanded > .sidebar-chapters {
-  max-height: 600px;
+  max-height: 1200px;
   opacity: 1;
   transition: max-height 0.35s ease, opacity 0.25s ease 0.05s;
 }
@@ -273,6 +307,20 @@ body {
   font-weight: 500;
   color: var(--text-muted);
   opacity: 0.7;
+}
+
+/* Nested sections inside chapters (e.g., Operating Concept inside Murmur) */
+.sidebar-chapters > .sidebar-section {
+  margin-bottom: 2px;
+}
+
+.sidebar-chapters > .sidebar-section > .sidebar-section-header {
+  font-size: 0.8125rem;
+  padding: 6px 8px;
+}
+
+.sidebar-chapters > .sidebar-section > .sidebar-chapters {
+  padding-left: 8px;
 }
 
 /* Main content area */
