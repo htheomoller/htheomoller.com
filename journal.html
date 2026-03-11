@@ -99,7 +99,7 @@
       </nav>
     </aside>
     <div class="sidebar-backdrop"></div>
-    <div class="sidebar-dot" aria-label="Toggle sidebar"></div>
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">&#x2039;</button>
 
     <!-- Main Content -->
     <main class="main">
@@ -427,87 +427,78 @@
     }, { threshold: 0.1, rootMargin: '-80px 0px -60% 0px' });
     sections.forEach(section => sectionObserver.observe(section));
 
-    // Sidebar toggle — desktop (dot) + mobile (hamburger)
+    // Sidebar toggle — desktop (arrow) + mobile (hamburger)
     const menuToggle = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
     const backdrop = document.querySelector('.sidebar-backdrop');
-    const dot = document.querySelector('.sidebar-dot');
+    const toggle = document.querySelector('.sidebar-toggle');
+    const layout = document.querySelector('.layout');
     const isDesktop = () => window.innerWidth > 768;
 
-    function openSidebar() {
-      sidebar.classList.add('open');
-      backdrop.classList.add('visible');
-      document.body.style.overflow = 'hidden';
-      if (isDesktop() && dot) dot.classList.add('sidebar-open');
-      if (!isDesktop() && menuToggle) menuToggle.classList.add('active');
-    }
-
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      backdrop.classList.remove('visible');
-      document.body.style.overflow = '';
-      if (dot) dot.classList.remove('sidebar-open');
-      if (menuToggle) menuToggle.classList.remove('active');
-    }
-
-    // Desktop: Dot click toggle
-    if (dot) {
-      dot.addEventListener('click', () => {
+    // Desktop: Arrow toggle
+    if (toggle) {
+      toggle.addEventListener('click', () => {
         if (!isDesktop()) return;
-        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        const collapsed = sidebar.classList.toggle('collapsed');
+        layout.classList.toggle('sidebar-collapsed');
+        toggle.classList.toggle('collapsed');
+        toggle.innerHTML = collapsed ? '›' : '‹';
       });
-
-      // Dot wiggle on page load
-      dot.classList.add('wiggle');
-      dot.addEventListener('animationend', () => dot.classList.remove('wiggle'));
-
-      // Dot drag interaction
-      let dragging = false, dragStartX = 0, sidebarWasOpen = false;
-
-      dot.addEventListener('pointerdown', (e) => {
-        if (!isDesktop()) return;
-        dragging = true;
-        dragStartX = e.clientX;
-        sidebarWasOpen = sidebar.classList.contains('open');
-        dot.setPointerCapture(e.pointerId);
-        e.preventDefault();
-      });
-
-      document.addEventListener('pointermove', (e) => {
-        if (!dragging) return;
-        const dx = e.clientX - dragStartX;
-        const threshold = 300 * 0.4;
-        if (!sidebarWasOpen && dx > threshold) { openSidebar(); dragging = false; }
-        else if (sidebarWasOpen && dx < -threshold) { closeSidebar(); dragging = false; }
-      });
-
-      document.addEventListener('pointerup', () => { dragging = false; });
     }
 
     // Mobile: Hamburger toggle
+    function openMobileSidebar() {
+      sidebar.classList.add('open');
+      backdrop.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+      if (menuToggle) menuToggle.classList.add('active');
+    }
+
+    function closeMobileSidebar() {
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('visible');
+      document.body.style.overflow = '';
+      if (menuToggle) menuToggle.classList.remove('active');
+    }
+
     if (menuToggle) {
       menuToggle.addEventListener('click', () => {
         if (isDesktop()) return;
-        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        sidebar.classList.contains('open') ? closeMobileSidebar() : openMobileSidebar();
       });
     }
 
-    // Backdrop click closes sidebar (desktop + mobile)
-    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    // Backdrop click closes mobile sidebar
+    if (backdrop) backdrop.addEventListener('click', closeMobileSidebar);
 
-    // Sidebar link click closes sidebar
+    // Sidebar link click closes mobile sidebar
     sidebar.querySelectorAll('a[href]').forEach(link => {
-      link.addEventListener('click', closeSidebar);
+      link.addEventListener('click', () => {
+        if (!isDesktop()) closeMobileSidebar();
+      });
     });
 
-    // Escape key closes sidebar
+    // Escape key closes sidebar (mobile or desktop)
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+      if (e.key === 'Escape') {
+        if (!isDesktop() && sidebar.classList.contains('open')) {
+          closeMobileSidebar();
+        } else if (isDesktop() && !sidebar.classList.contains('collapsed')) {
+          sidebar.classList.add('collapsed');
+          layout.classList.add('sidebar-collapsed');
+          toggle.classList.add('collapsed');
+          toggle.innerHTML = '›';
+        }
+      }
     });
 
-    // Resize: clean up state when switching breakpoints
+    // Resize: clean up mobile state when switching to desktop
     window.addEventListener('resize', () => {
-      if (sidebar.classList.contains('open')) closeSidebar();
+      if (!isDesktop()) return;
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('visible');
+      document.body.style.overflow = '';
+      if (menuToggle) menuToggle.classList.remove('active');
     });
   </script>
 
