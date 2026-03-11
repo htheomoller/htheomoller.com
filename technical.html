@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>h. theo m&ouml;ller &mdash; Murmur: Architecture</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo">h. theo m&ouml;ller</a>
+    <nav class="header-nav">
+      <a href="journal.html">Journal</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <!-- Layout: Sidebar + Main -->
+  <div class="layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-tree-label">murmur</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" data-section="concept">
+              Operating Concept <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="index.html#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="index.html#problem"><span class="nav-number">01</span> The Problem</a>
+              <a href="index.html#medium"><span class="nav-number">02</span> The Medium</a>
+              <a href="index.html#memory"><span class="nav-number">03</span> The Memory</a>
+              <a href="index.html#bridge"><span class="nav-number">04</span> The Bridge</a>
+              <a href="index.html#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
+              <a href="index.html#model"><span class="nav-number">06</span> The Model</a>
+              <a href="index.html#universality"><span class="nav-number">07</span> Universality</a>
+              <a href="index.html#not"><span class="nav-number">08</span> What It Is Not</a>
+              <a href="index.html#conclusion"><span class="nav-number">09</span> Conclusion</a>
+              <a href="index.html#references"><span class="nav-number"></span> References</a>
+            </div>
+          </div>
+
+          <div class="sidebar-section expanded">
+            <a class="sidebar-section-header" data-section="technical">
+              Architecture <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="#pipeline"><span class="nav-number">01</span> The pipeline</a>
+              <a href="#stack"><span class="nav-number">02</span> The stack</a>
+              <a href="#multitenant"><span class="nav-number">03</span> Multi-tenant</a>
+              <a href="#memory"><span class="nav-number">04</span> Memory engine</a>
+              <a href="#personality"><span class="nav-number">05</span> Personality</a>
+              <a href="#trace"><span class="nav-number">06</span> Message trace</a>
+              <a href="#byok"><span class="nav-number">07</span> BYOK</a>
+              <a href="#security"><span class="nav-number">08</span> Security</a>
+              <a href="#degradation"><span class="nav-number">09</span> Degradation</a>
+              <a href="#build"><span class="nav-number">10</span> Build order</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-tree-label">journal</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" href="journal.html">
+              <span class="journal-date">2026-03-10</span> Building a Memory System
+            </a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Hero -->
+        <section class="hero">
+          <h1>Murmur: Architecture Skeleton</h1>
+          <p class="tagline">
+            How Murmur is built, and why each piece exists.
+          </p>
+        </section>
+
+        <!-- Abstract -->
+        <section id="abstract" class="section fade-in">
+          <h2>Abstract</h2>
+          <p>
+            Murmur is a WhatsApp-based collective memory system built for small teams. One WhatsApp number, many people talking one-to-one, a shared knowledge base that anyone can query. This document describes the technical architecture: the message pipeline, multi-tenant design, memory engine, personality system, and the economics of a bring-your-own-key model.
+          </p>
+          <p>
+            Five foundational decisions shaped the architecture. Build a custom core rather than forking an existing framework. Connect directly to Meta&rsquo;s Cloud API rather than through a third-party broker. Store all memory in a database with vector search rather than in files. Design for multi-tenancy from day one. Enforce role-based access control with private memory at the data layer.
+          </p>
+          <p>
+            Every design choice here was tested first in a single-tenant deployment, a WhatsApp assistant running for a wedding venue in southern Brazil. Eight months of production incidents shaped this blueprint.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 01. The pipeline -->
+        <section id="pipeline" class="section fade-in">
+          <span class="section-number">01</span>
+          <h2>The pipeline</h2>
+          <p>
+            Every message follows the same path through Murmur. A WhatsApp message arrives via webhook. The system checks for duplicates at the database level because Meta retries webhooks aggressively, and processing a message twice means a user gets two responses. After dedup, the system resolves which tenant owns the phone number, identifies the sender, checks their role and permissions, then assembles context.
+          </p>
+
+<pre class="ascii-diagram">Incoming WhatsApp Message
+  &#x2192; Webhook Handler (dedup, validate)
+  &#x2192; Tenant Resolver (phone number &#x2192; tenant)
+  &#x2192; Identity Resolver (sender phone &#x2192; user + role)
+  &#x2192; RBAC Gate (owner/member/viewer permissions)
+  &#x2192; Context Builder (personality + memories + history)
+  &#x2192; Agent Runtime (LLM call + tool execution)
+  &#x2192; Memory Evaluator (is this worth remembering?)
+  &#x2192; Knowledge Capture (extract &#x2192; embed &#x2192; store)
+  &#x2192; Response Formatter (split, batch, send)
+  &#x2192; Outgoing WhatsApp Message</pre>
+
+          <p>
+            Context assembly is where the system earns its keep. The context builder loads four personality files that define how the assistant thinks and speaks, retrieves the twenty most semantically relevant memories from the knowledge base, and includes recent conversation history. Total prompt size sits around twelve to sixteen thousand tokens.
+          </p>
+          <p>
+            The language model generates a response using the tenant&rsquo;s own API key (more on that in section seven). Before the response is sent, the system writes a crash-safe extraction record. If the process dies between sending the response and extracting memories, nothing is lost. A background worker picks up pending extractions and processes them, classifying knowledge into categories, generating embeddings, checking for contradictions against existing memories, and storing what&rsquo;s worth keeping.
+          </p>
+          <p>
+            Full round-trip: two to four seconds. The language model call dominates.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 02. The stack -->
+        <section id="stack" class="section fade-in">
+          <span class="section-number">02</span>
+          <h2>The stack</h2>
+          <p>
+            Technology choices are deliberate and minimal.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Database</strong></td>
+                <td>Supabase (Postgres + pgvector + Auth + RLS)</td>
+                <td>Row-level security for multi-tenant. pgvector for semantic search. Already proven in production.</td>
+              </tr>
+              <tr>
+                <td><strong>Runtime</strong></td>
+                <td>Python 3.12+ (asyncio)</td>
+                <td>Single async process, all tenants. No container orchestration needed.</td>
+              </tr>
+              <tr>
+                <td><strong>LLM routing</strong></td>
+                <td>LiteLLM (BYOK)</td>
+                <td>Routes through each tenant&rsquo;s own API key. Supports Anthropic and OpenAI. Tenants choose their model.</td>
+              </tr>
+              <tr>
+                <td><strong>Messaging</strong></td>
+                <td>WhatsApp Cloud API (direct)</td>
+                <td>Official API, no ban risk. Embedded Signup for onboarding. No third-party broker.</td>
+              </tr>
+              <tr>
+                <td><strong>Hosting</strong></td>
+                <td>Hetzner VPS + Docker</td>
+                <td>Tailscale for admin. Systemd for auto-restart.</td>
+              </tr>
+              <tr>
+                <td><strong>Transcription</strong></td>
+                <td>Whisper API</td>
+                <td>Voice notes to text.</td>
+              </tr>
+            </tbody>
+          </table>
+
+<pre class="ascii-diagram">Internet
+  &#x2193; (HTTPS)
+Hetzner VPS
+  &#x251C;&#x2500;&#x2500; murmur-core (Python async process)
+  &#x2502;     &#x251C;&#x2500;&#x2500; Webhook server (aiohttp, port 8443)
+  &#x2502;     &#x251C;&#x2500;&#x2500; Agent runtime (all tenants)
+  &#x2502;     &#x2514;&#x2500;&#x2500; Cron scheduler (proactive messages)
+  &#x251C;&#x2500;&#x2500; Tailscale (admin SSH)
+  &#x2514;&#x2500;&#x2500; systemd (auto-restart on crash)
+
+Supabase Cloud (sa-east-1)
+  &#x251C;&#x2500;&#x2500; Postgres + pgvector (all data)
+  &#x251C;&#x2500;&#x2500; Auth (admin dashboard login)
+  &#x251C;&#x2500;&#x2500; Edge Functions (scheduled jobs)
+  &#x2514;&#x2500;&#x2500; Realtime (dashboard live updates)</pre>
+
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 03. Multi-tenant design -->
+        <section id="multitenant" class="section fade-in">
+          <span class="section-number">03</span>
+          <h2>Multi-tenant design</h2>
+          <p>
+            A tenant is one Murmur instance. One WhatsApp number, one shared brain, one set of personality files, one pool of memories. Each tenant has N users with one of three roles: owner, member, or viewer.
+          </p>
+
+          <h3>Isolation at the database level</h3>
+          <p>
+            Every table has a tenant_id column. Every query filters by it. Row-level security policies enforce the boundaries in Postgres itself, so even a bug in the application layer cannot leak data across tenants.
+          </p>
+          <p>
+            Tenant configuration is cached in memory and refreshed every sixty seconds. Personality files are cached per tenant and invalidated through Supabase Realtime subscriptions when an owner edits them. The webhook handler resolves an incoming phone number to a tenant in microseconds.
+          </p>
+
+          <h3>Permission matrix</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Owner</th>
+                <th>Member</th>
+                <th>Viewer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Send messages</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+              </tr>
+              <tr>
+                <td>Query the knowledge base</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+              </tr>
+              <tr>
+                <td>Conversations remembered</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Can teach (create memories)</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Private memories</td>
+                <td>&#x2713;</td>
+                <td>&#x2713;</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Invite members</td>
+                <td>&#x2713;</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Manage personality</td>
+                <td>&#x2713;</td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            When one VPS maxes out, spin up a second and route tenants by region. No architectural changes needed.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 04. The memory engine -->
+        <section id="memory" class="section fade-in">
+          <span class="section-number">04</span>
+          <h2>The memory engine</h2>
+
+          <h3>Crash-safe extraction</h3>
+          <p>
+            Memory extraction is the most failure-prone path in the system. If the process crashes between a conversation turn and memory extraction, the user said something worth remembering and the system silently forgot it. This happened in production with the single-tenant deployment.
+          </p>
+          <p>
+            The fix is a crash-safe queue. Before sending a response, the system writes the message-response pair to a pending extractions table. A background worker picks up pending records, runs a language model evaluation to extract knowledge, and stores whatever is worth keeping. If the worker crashes, it retries on restart. After three failed attempts, the record is flagged for manual review.
+          </p>
+
+          <h3>Memory categories</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>What goes here</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Fact</strong></td>
+                <td>Verifiable information</td>
+                <td>&ldquo;Project deadline is March 15&rdquo;</td>
+              </tr>
+              <tr>
+                <td><strong>Decision</strong></td>
+                <td>Choices made</td>
+                <td>&ldquo;We&rsquo;re going with React for the frontend&rdquo;</td>
+              </tr>
+              <tr>
+                <td><strong>Preference</strong></td>
+                <td>How someone likes things</td>
+                <td>&ldquo;Client prefers morning meetings&rdquo;</td>
+              </tr>
+              <tr>
+                <td><strong>Commitment</strong></td>
+                <td>Promises or tasks</td>
+                <td>&ldquo;Jo&atilde;o will send the proposal by Friday&rdquo;</td>
+              </tr>
+              <tr>
+                <td><strong>Status</strong></td>
+                <td>Current state of something</td>
+                <td>&ldquo;Server migration is 60% complete&rdquo;</td>
+              </tr>
+              <tr>
+                <td><strong>Deadline</strong></td>
+                <td>Time-bound items</td>
+                <td>&ldquo;Tax filing due April 30&rdquo;</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            Each memory carries metadata: who said it, when, a confidence score, topic tags, and a visibility flag. Visibility is either shared or private. The language model detects privacy signals in conversation (&ldquo;keep this between us,&rdquo; &ldquo;don&rsquo;t tell anyone&rdquo;) and marks those memories accordingly.
+          </p>
+
+          <h3>Semantic context loading</h3>
+          <p>
+            When building context for a conversation, the system generates an embedding from the user&rsquo;s latest message and retrieves the twenty most relevant memories using HNSW vector search. HNSW was chosen over IVFFlat because it handles incremental inserts (new tenants start with empty memory) and delivers roughly fifteen times faster queries. IVFFlat only justifies itself at fifty million vectors.
+          </p>
+          <p>
+            Private memories are enforced at the SQL level. The RLS policy filters them so a user only ever sees shared memories plus their own private memories. The language model never even receives another user&rsquo;s private memories in its context window.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 05. Personality system -->
+        <section id="personality" class="section fade-in">
+          <span class="section-number">05</span>
+          <h2>Personality system</h2>
+          <p>
+            Each assistant&rsquo;s personality is defined by six markdown files, ordered by cache stability.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Purpose</th>
+                <th>Tokens</th>
+                <th>Cache priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>IDENTITY</strong></td>
+                <td>Name, role, language, key business facts</td>
+                <td>~500</td>
+                <td>High (rarely changes)</td>
+              </tr>
+              <tr>
+                <td><strong>SOUL</strong></td>
+                <td>Values, personality, tensions, humor</td>
+                <td>~1,500</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td><strong>VOICE</strong></td>
+                <td>Tone, vocabulary, sentence patterns, always/never rules</td>
+                <td>~1,500</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td><strong>AGENTS</strong></td>
+                <td>Operational rules: batching, escalation, dormancy</td>
+                <td>~1,000</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td><strong>EXAMPLES</strong></td>
+                <td>Reference conversations showing ideal behavior</td>
+                <td>~2,000</td>
+                <td>Medium (conditional)</td>
+              </tr>
+              <tr>
+                <td><strong>USER</strong></td>
+                <td>Business context, key people, products</td>
+                <td>~1,500</td>
+                <td>Medium (conditional)</td>
+              </tr>
+            </tbody>
+          </table>
+
+<pre class="ascii-diagram">[SYSTEM INSTRUCTIONS]           &#x2190; Framework (never changes)
+[IDENTITY.md]                   &#x2190; Name, role (rarely changes)
+[SOUL.md]                       &#x2190; Personality (rarely changes)
+[VOICE.md]                      &#x2190; Tone rules (rarely changes)
+[AGENTS.md]                     &#x2190; Operational rules
+&#x2500;&#x2500;&#x2500; cache boundary (above = cached 85%+) &#x2500;&#x2500;&#x2500;
+[Relevant memories]             &#x2190; Changes per conversation
+[Conversation history]          &#x2190; Changes per message
+[USER.md / EXAMPLES.md]         &#x2190; Loaded conditionally
+[Runtime metadata]              &#x2190; Timestamp, user info, role</pre>
+
+          <p>
+            The first four files are always loaded with the most stable content first. This maximizes prompt caching within a single tenant&rsquo;s conversation stream. The cache prefix stays identical call after call until the personality changes, which for most tenants means months.
+          </p>
+          <p>
+            New tenants get a default personality: neutral-friendly, professional but warm. Personality can be customized through a <strong>Soul Interview</strong>, a ten-minute guided conversation via WhatsApp. The assistant asks what kind of personality would fit, offers archetypes, calibrates formality and tone, and generates the first three files automatically.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 06. A message trace -->
+        <section id="trace" class="section fade-in">
+          <span class="section-number">06</span>
+          <h2>A message trace</h2>
+          <p>
+            What happens when a team member named Jo&atilde;o sends &ldquo;The client meeting is moved to Thursday 3pm.&rdquo;
+          </p>
+          <p>
+            The webhook arrives from Meta. The system checks the dedup table. This message ID hasn&rsquo;t been seen, so it proceeds. The phone number resolves to the Acme Project tenant. Jo&atilde;o is identified by his phone number and his role comes back as member, meaning he can teach the system and his conversations are remembered.
+          </p>
+          <p>
+            The context builder loads Acme&rsquo;s personality files from cache, generates an embedding for Jo&atilde;o&rsquo;s message, and retrieves twelve relevant shared memories plus three of Jo&atilde;o&rsquo;s private notes. It loads the last twenty messages from this conversation. Total context: about nine and a half thousand tokens. Eighty-five percent were cached from Jo&atilde;o&rsquo;s previous message.
+          </p>
+          <p>
+            The language model responds: &ldquo;Got it! I&rsquo;ve updated the client meeting to Thursday at 3pm. Should I remind everyone the day before?&rdquo;
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Input tokens</td>
+                <td>9,800</td>
+              </tr>
+              <tr>
+                <td>Output tokens</td>
+                <td>42</td>
+              </tr>
+              <tr>
+                <td>Cache read</td>
+                <td>8,300 (85%)</td>
+              </tr>
+              <tr>
+                <td>Latency</td>
+                <td>~3 seconds</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            Before sending, the system writes the message pair to the pending extractions queue. The response goes out. The background worker picks up the extraction, identifies a fact worth remembering, generates an embedding, checks existing memories, finds a conflicting one (&ldquo;client meeting is Tuesday 2pm&rdquo;), marks it as superseded, and stores the new one.
+          </p>
+          <p>
+            Three seconds. Jo&atilde;o never noticed any of it.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 07. BYOK architecture -->
+        <section id="byok" class="section fade-in">
+          <span class="section-number">07</span>
+          <h2>BYOK architecture</h2>
+          <p>
+            BYOK, Bring Your Own Key, means users provide their own language model API key. Murmur handles routing, memory, and infrastructure. Users pay their own inference costs directly to Anthropic or OpenAI.
+          </p>
+          <p>
+            API key security follows the same pattern as WhatsApp credentials. Encrypted at rest with pgcrypto. Never logged, never included in error messages. Decrypted only at the moment of the language model call, held in memory briefly, then discarded. Invalid or expired keys trigger a friendly WhatsApp message pointing the user to the dashboard.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 08. Security and privacy -->
+        <section id="security" class="section fade-in">
+          <span class="section-number">08</span>
+          <h2>Security and privacy</h2>
+          <p>
+            Two risks sit above everything else: tenant data cross-contamination and private memory leakage. Both are mitigated at the database level, not the application level. RLS policies on every table. Tenant ID in every query. The application layer is a second defense, not the first.
+          </p>
+
+          <h3>Threat model</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Threat</th>
+                <th>Mitigation</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tenant data cross-contamination</td>
+                <td>RLS policies on all tables. Tenant ID in every query.</td>
+                <td>Critical</td>
+              </tr>
+              <tr>
+                <td>Private memory leakage</td>
+                <td>Visibility filter at SQL level. LLM never sees others&rsquo; private memories.</td>
+                <td>Critical</td>
+              </tr>
+              <tr>
+                <td>Prompt injection</td>
+                <td>No code execution. Tools limited to DB queries. System prompt hardened.</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td>Credential theft</td>
+                <td>Encrypted at rest (pgcrypto). Never logged.</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td>Webhook spoofing</td>
+                <td>Verify Meta webhook signature on every request.</td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td>DDoS via webhook flood</td>
+                <td>Rate limiting per phone number. Async queue with backpressure.</td>
+                <td>Medium</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Data protection (LGPD/GDPR)</h3>
+          <p>
+            Deletion cascades through all user memories. Export generates a markdown file with shared and private memories. The first message triggers an explicit consent flow. Only extracted memories are stored, not full conversation logs. Audio from voice notes is deleted immediately after transcription. The system never retains recordings.
+          </p>
+          <p>
+            An audit log tracks every significant action: memory creation and deletion, user invitations, role changes, data exports. Breach notification follows the seventy-two hour GDPR requirement with structured alerting.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 09. Graceful degradation -->
+        <section id="degradation" class="section fade-in">
+          <span class="section-number">09</span>
+          <h2>Graceful degradation</h2>
+          <p>
+            Every external dependency has a failure mode and a user-facing response.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Failure</th>
+                <th>User experience</th>
+                <th>System behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>LLM API down</strong></td>
+                <td>&ldquo;I&rsquo;m having trouble thinking right now.&rdquo;</td>
+                <td>Queue + retry every 60s. Alert owner after 5 min.</td>
+              </tr>
+              <tr>
+                <td><strong>API key invalid</strong></td>
+                <td>&ldquo;Check your Murmur dashboard.&rdquo;</td>
+                <td>Log error. Notify tenant owner.</td>
+              </tr>
+              <tr>
+                <td><strong>Supabase unreachable</strong></td>
+                <td>Silence (~5s)</td>
+                <td>Webhook returns 500 &#x2192; Meta retries. Systemd auto-restart.</td>
+              </tr>
+              <tr>
+                <td><strong>Whisper timeout</strong></td>
+                <td>&ldquo;Could you type that out?&rdquo;</td>
+                <td>Log error. Conversation continues.</td>
+              </tr>
+              <tr>
+                <td><strong>Embedding fails</strong></td>
+                <td>Normal conversation</td>
+                <td>Memory saved without vector. Background retry.</td>
+              </tr>
+              <tr>
+                <td><strong>Process crash</strong></td>
+                <td>Silence (~5s), then resumes</td>
+                <td>Systemd auto-restart. Pending extractions retried.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            A health endpoint returns active tenant count, uptime, pending extraction queue depth, and the last error. Monitored externally at five-minute intervals.
+          </p>
+        </section>
+
+        <hr class="section-separator">
+
+        <!-- 10. Build order -->
+        <section id="build" class="section fade-in">
+          <span class="section-number">10</span>
+          <h2>Build order</h2>
+          <p>
+            The architecture is built in phases. This matters because Murmur is being built by a non-developer using AI tools, so the timeline must be realistic.
+          </p>
+
+          <h3>Phase 0: Foundation (weeks 1&ndash;3)</h3>
+          <p>
+            Database schema, webhook server, message dedup, basic WhatsApp send and receive, BYOK key storage, health check endpoint.
+          </p>
+          <p>
+            <strong>Milestone:</strong> a webhook receives a message, logs it, and sends a response.
+          </p>
+
+          <h3>Phase 1: Single-tenant MVP (weeks 4&ndash;8)</h3>
+          <p>
+            Context builder, agent loop, crash-safe memory extraction, semantic search, token tracking, conversation consolidation, voice notes, graceful degradation.
+          </p>
+          <p>
+            <strong>Milestone:</strong> one working assistant with memory, running on one number for one team. This is the product validation point. Get one real team using it before building anything else.
+          </p>
+
+          <h3>Phase 2: Multi-tenant (weeks 9&ndash;14)</h3>
+          <p>
+            Tenant resolution, config caching, per-tenant personality and memory isolation, user identification, RBAC enforcement, private memory, invitation flow.
+          </p>
+          <p>
+            <strong>Milestone:</strong> two tenants, three roles, private memory, one process.
+          </p>
+
+          <h3>Phase 3: Onboarding (weeks 15&ndash;20)</h3>
+          <p>
+            Soul Interview, Embedded Signup, web signup flow, admin dashboard.
+          </p>
+          <p>
+            <strong>Milestone:</strong> a customer can sign up, pay, connect WhatsApp, and have a working assistant.
+          </p>
+
+          <h3>Phase 4: Proactive intelligence (weeks 21&ndash;25)</h3>
+          <p>
+            Cron scheduler, daily digests, deadline reminders, WhatsApp template messages.
+          </p>
+          <p>
+            <strong>Milestone:</strong> the assistant reaches out on its own.
+          </p>
+
+          <h3>Phase 5: Hardening and launch (weeks 26&ndash;30)</h3>
+          <p>
+            Security audit, LGPD/GDPR compliance, legal documents, load testing, monitoring, first five pilot teams, public launch.
+          </p>
+          <p>
+            The Meta Tech Provider application runs in parallel from day one. It is the longest lead-time item and entirely outside anyone&rsquo;s control.
+          </p>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-text">&copy; 2026 h. theo m&ouml;ller</span>
+      <span class="footer-text"><a href="about.html">About this project</a></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Sidebar expand/collapse
+    document.querySelectorAll('.sidebar-section-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        e.preventDefault();
+        header.parentElement.classList.toggle('expanded');
+      });
+    });
+
+    // Active sidebar link tracking (current page sections only)
+    const sections = document.querySelectorAll('.section[id]');
+    const chapterLinks = document.querySelectorAll('.sidebar-chapters a[href^="#"]');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          chapterLinks.forEach(link => link.classList.remove('active'));
+          const activeLink = document.querySelector(`.sidebar-chapters a[href="#${entry.target.id}"]`);
+          if (activeLink) activeLink.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '-80px 0px -60% 0px' });
+    sections.forEach(section => sectionObserver.observe(section));
+  </script>
+
+</body>
+</html>

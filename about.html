@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>h. theo m&ouml;ller — About</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo">h. theo m&ouml;ller</a>
+    <nav class="header-nav">
+      <a href="journal.html">Journal</a>
+      <a href="about.html" class="active">About</a>
+    </nav>
+  </header>
+
+  <!-- Layout: Sidebar + Main -->
+  <div class="layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-tree-label">murmur</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" data-section="concept">
+              Operating Concept <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="index.html#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="index.html#problem"><span class="nav-number">01</span> The Problem</a>
+              <a href="index.html#medium"><span class="nav-number">02</span> The Medium</a>
+              <a href="index.html#memory"><span class="nav-number">03</span> The Memory</a>
+              <a href="index.html#bridge"><span class="nav-number">04</span> The Bridge</a>
+              <a href="index.html#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
+              <a href="index.html#model"><span class="nav-number">06</span> The Model</a>
+              <a href="index.html#universality"><span class="nav-number">07</span> Universality</a>
+              <a href="index.html#not"><span class="nav-number">08</span> What It Is Not</a>
+              <a href="index.html#conclusion"><span class="nav-number">09</span> Conclusion</a>
+              <a href="index.html#references"><span class="nav-number"></span> References</a>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" data-section="technical">
+              Architecture <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="technical.html#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="technical.html#pipeline"><span class="nav-number">01</span> The pipeline</a>
+              <a href="technical.html#stack"><span class="nav-number">02</span> The stack</a>
+              <a href="technical.html#multitenant"><span class="nav-number">03</span> Multi-tenant</a>
+              <a href="technical.html#memory"><span class="nav-number">04</span> Memory engine</a>
+              <a href="technical.html#personality"><span class="nav-number">05</span> Personality</a>
+              <a href="technical.html#trace"><span class="nav-number">06</span> Message trace</a>
+              <a href="technical.html#byok"><span class="nav-number">07</span> BYOK</a>
+              <a href="technical.html#security"><span class="nav-number">08</span> Security</a>
+              <a href="technical.html#degradation"><span class="nav-number">09</span> Degradation</a>
+              <a href="technical.html#build"><span class="nav-number">10</span> Build order</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-tree-label">journal</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" href="journal.html">
+              <span class="journal-date">2026-03-10</span> Building a Memory System
+            </a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="main-inner">
+        <div class="about-content">
+
+          <h1>Baby Steps</h1>
+          <p class="about-subtitle">An experiment in group memory</p>
+
+          <p>
+            I don't have a computer science degree. I spent twenty years designing books and
+            magazines — setting type, building layouts, thinking in grids and whitespace. I'm a
+            visual thinker who ended up in rural southern Brazil running a wedding venue and
+            raising two daughters.
+          </p>
+
+          <p>
+            But I've been watching the same problem repeat across every team I've been part of:
+            <strong>the most important knowledge disappears</strong>.
+          </p>
+
+          <p>
+            It disappears in WhatsApp messages that scroll past. In meetings no one summarizes.
+            In the heads of people who leave. Every team I know has lost something valuable
+            because no one wrote it down — and no one writes it down because the act of
+            documenting feels like work that interrupts the real work.
+          </p>
+
+          <p>
+            The researchers call this <strong>group memory</strong> — or more precisely,
+            transactive memory. How do groups remember? How does a team know what it knows?
+            People have been studying this since the 1980s. The theory is solid. What's new is
+            that the technology to implement it — large language models, semantic search, open
+            tool protocols — now exists.
+          </p>
+
+          <p>
+            Murmur is my attempt at solving this. Not a grand vision delivered fully-formed, but
+            baby steps — an experiment by a curious person researching a problem we all share.
+            I started building because I live the problem every day: a small team, fast
+            conversations, decisions made in passing, context that evaporates.
+          </p>
+
+          <p>
+            The idea is simple. People talk. The system listens, interprets, and remembers. No
+            forms to fill. No data to enter. Just conversation becoming memory — and memory
+            becoming action.
+          </p>
+
+          <p>
+            I don't know if it'll work at scale. I don't know if the theory translates cleanly
+            into product. But I know the problem is real, the research is sound, and the tools
+            are finally here. So I'm building, one step at a time.
+          </p>
+
+          <div class="signature">
+            <strong>Henrique Theo M&ouml;ller</strong>
+            Itapu&atilde;, Viam&atilde;o, Brazil
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-text">&copy; 2026 h. theo m&ouml;ller</span>
+      <span class="footer-text"><a href="about.html">About this project</a></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Sidebar expand/collapse
+    document.querySelectorAll('.sidebar-section-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        e.preventDefault();
+        header.parentElement.classList.toggle('expanded');
+      });
+    });
+  </script>
+
+</body>
+</html>

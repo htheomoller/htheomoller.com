@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>h. theo m&ouml;ller &mdash; Journal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo">h. theo m&ouml;ller</a>
+    <nav class="header-nav">
+      <a href="journal.html" class="active">Journal</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <!-- Layout: Sidebar + Main -->
+  <div class="layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-tree-label">murmur</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" data-section="concept">
+              Operating Concept <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="index.html#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="index.html#problem"><span class="nav-number">01</span> The Problem</a>
+              <a href="index.html#medium"><span class="nav-number">02</span> The Medium</a>
+              <a href="index.html#memory"><span class="nav-number">03</span> The Memory</a>
+              <a href="index.html#bridge"><span class="nav-number">04</span> The Bridge</a>
+              <a href="index.html#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
+              <a href="index.html#model"><span class="nav-number">06</span> The Model</a>
+              <a href="index.html#universality"><span class="nav-number">07</span> Universality</a>
+              <a href="index.html#not"><span class="nav-number">08</span> What It Is Not</a>
+              <a href="index.html#conclusion"><span class="nav-number">09</span> Conclusion</a>
+              <a href="index.html#references"><span class="nav-number"></span> References</a>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <a class="sidebar-section-header" data-section="technical">
+              Architecture <span class="chevron">&#x25BE;</span>
+            </a>
+            <div class="sidebar-chapters">
+              <a href="technical.html#abstract"><span class="nav-number"></span> Abstract</a>
+              <a href="technical.html#pipeline"><span class="nav-number">01</span> The pipeline</a>
+              <a href="technical.html#stack"><span class="nav-number">02</span> The stack</a>
+              <a href="technical.html#multitenant"><span class="nav-number">03</span> Multi-tenant</a>
+              <a href="technical.html#memory"><span class="nav-number">04</span> Memory engine</a>
+              <a href="technical.html#personality"><span class="nav-number">05</span> Personality</a>
+              <a href="technical.html#trace"><span class="nav-number">06</span> Message trace</a>
+              <a href="technical.html#byok"><span class="nav-number">07</span> BYOK</a>
+              <a href="technical.html#security"><span class="nav-number">08</span> Security</a>
+              <a href="technical.html#degradation"><span class="nav-number">09</span> Degradation</a>
+              <a href="technical.html#build"><span class="nav-number">10</span> Build order</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-tree-label">journal</div>
+        <div class="sidebar-tree">
+          <div class="sidebar-section expanded">
+            <a class="sidebar-section-header active" href="#entry-2026-03-10">
+              <span class="journal-date">2026-03-10</span> Building a Memory System
+            </a>
+            <div class="sidebar-chapters">
+              <a href="#critique">The Critique</a>
+              <a href="#what-we-built">What We Built</a>
+              <a href="#ab-test">A/B Test &mdash; Day 1</a>
+              <a href="#observations">Observations</a>
+              <a href="#verdict">Verdict</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Journal Entry -->
+        <article id="entry-2026-03-10" class="journal-entry">
+
+          <header class="journal-header">
+            <time class="journal-entry-date" datetime="2026-03-10">March 10, 2026</time>
+            <h1>Building a Memory System</h1>
+            <p class="tagline">
+              We designed a brain, critiqued it, then built the damn thing. Here&rsquo;s what happened on day one.
+            </p>
+          </header>
+
+          <hr class="section-separator">
+
+          <!-- The Critique -->
+          <section id="critique" class="section fade-in">
+            <h2>The Critique</h2>
+            <p>
+              Murmur needs memory. Not the kind where you dump everything into a vector database and hope cosine similarity does the rest &mdash; actual memory, modeled on how brains work. A hippocampus for fast capture, a neocortex for slow consolidation, and a retrieval function that gets better with use.
+            </p>
+            <p>
+              We designed the schema: a <code>memories</code> table backed by pgvector, an <code>activate()</code> function that scores results using ACT-R decay from cognitive psychology, Hebbian reinforcement that strengthens memories each time they&rsquo;re recalled, and confidence weighting. The math was sound. The SQL was clean.
+            </p>
+            <p>
+              Then we tore it apart. A formal critique identified seven gaps between what we&rsquo;d designed and what would actually work.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Gap</th>
+                  <th>The Problem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td>No write path</td>
+                  <td>A beautiful retrieval function with zero memories to retrieve. No pipeline to embed content and store it.</td>
+                </tr>
+                <tr>
+                  <td><strong>2</strong></td>
+                  <td>Vector-only search</td>
+                  <td>Pure semantic search drops ~22% precision vs. hybrid. Searching for &ldquo;Chakra decision&rdquo; needs keyword matching, not just vibes.</td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td>No multi-tenant columns</td>
+                  <td>Building single-tenant and hoping to bolt on multi-tenancy later &mdash; one of the oldest mistakes in SaaS.</td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td>No lifecycle management</td>
+                  <td>Wrong memories persist at confidence 1.0 forever. No way to mark something as superseded.</td>
+                </tr>
+                <tr>
+                  <td><strong>5</strong></td>
+                  <td>No consolidation engine</td>
+                  <td>The neocortex &mdash; the whole differentiator &mdash; was a wish, not a design.</td>
+                </tr>
+                <tr>
+                  <td><strong>6</strong></td>
+                  <td>Dead <code>importance</code> column</td>
+                  <td>Nullable, unused in scoring, no defined semantics. Technical debt from day zero.</td>
+                </tr>
+                <tr>
+                  <td><strong>7</strong></td>
+                  <td>No retrieval logging</td>
+                  <td>No way to know if <code>activate()</code> was returning useful results or garbage.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>
+              Harsh, but honest. And that&rsquo;s the point of critiquing your own work before anyone else gets to &mdash; you find the structural problems while they&rsquo;re still cheap to fix.
+            </p>
+          </section>
+
+          <hr class="section-separator">
+
+          <!-- What We Built -->
+          <section id="what-we-built" class="section fade-in">
+            <h2>What We Built</h2>
+            <p>
+              After the critique, we went back and addressed each gap. Not all of them &mdash; some were deliberately deferred &mdash; but most.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Prescription</th>
+                  <th>Status</th>
+                  <th>What We Did</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Write path</strong></td>
+                  <td class="status-done">Done</td>
+                  <td>Built <code>embed-and-store</code>, a Supabase Edge Function that accepts markdown content, calls OpenAI&rsquo;s embedding API, and inserts into the memories table. Every memory capture now dual-writes: vault file first, then HTTP POST to Supabase. Fire-and-forget &mdash; the vault file is always the source of truth.</td>
+                </tr>
+                <tr>
+                  <td><strong>Hybrid search</strong></td>
+                  <td class="status-done">Done</td>
+                  <td>Rewrote <code>activate()</code> to combine vector similarity with BM25 keyword matching using Reciprocal Rank Fusion. The scoring formula became: <code>rrf_score &times; softplus(ACT-R_decay) &times; confidence &times; importance</code>. Both signals contribute.</td>
+                </tr>
+                <tr>
+                  <td><strong>Multi-tenant columns</strong></td>
+                  <td class="status-deferred">Deferred</td>
+                  <td>The dogfood is single-user. Adding tenant columns now would be architectural theater &mdash; correct in principle, zero value today. We&rsquo;ll add them when Murmur goes multi-tenant.</td>
+                </tr>
+                <tr>
+                  <td><strong>Lifecycle management</strong></td>
+                  <td class="status-done">Done</td>
+                  <td>Added <code>status</code> column with three states: active, superseded, archived. Added <code>superseded_by</code> reference. <code>activate()</code> now filters to active memories only. Old knowledge can be corrected without being deleted.</td>
+                </tr>
+                <tr>
+                  <td><strong>Consolidation engine</strong></td>
+                  <td class="status-later">Not yet</td>
+                  <td>Still conceptual. The neocortex &mdash; <code>canonical_views</code> table, consolidation logic, sleep replay &mdash; is the next major design challenge. We need more data before we can design it well.</td>
+                </tr>
+                <tr>
+                  <td><strong>Importance column</strong></td>
+                  <td class="status-done">Done</td>
+                  <td>Integrated into the scoring formula. Defaults to 1.0, adjustable per memory. No longer dead weight.</td>
+                </tr>
+                <tr>
+                  <td><strong>Retrieval logging</strong></td>
+                  <td class="status-done">Done</td>
+                  <td>Created <code>activation_log</code> table. Every call to <code>activate()</code> logs the query, result IDs, and scores. This is the ground truth for measuring whether the system actually works.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>
+              Five out of seven addressed. The two we deferred &mdash; multi-tenant columns and the consolidation engine &mdash; are both cases where building prematurely would be worse than waiting. Multi-tenancy adds complexity with no current user. Consolidation needs a corpus large enough to consolidate.
+            </p>
+            <p>
+              With the infrastructure in place, we set up an A/B test: run both retrieval systems side by side for two weeks and see which one finds what the other misses.
+            </p>
+          </section>
+
+          <hr class="section-separator">
+
+          <!-- A/B Test Day 1 -->
+          <section id="ab-test" class="section fade-in">
+            <h2>A/B Test &mdash; Day 1</h2>
+            <p>
+              The test pits two retrieval systems against each other on the same corpus of memories:
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>QMD (control)</th>
+                  <th>activate() (experimental)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Engine</strong></td>
+                  <td>BM25 + vector + cross-encoder reranking</td>
+                  <td>RRF (vector + BM25) + ACT-R decay + confidence</td>
+                </tr>
+                <tr>
+                  <td><strong>Embedding</strong></td>
+                  <td>QMD&rsquo;s built-in model</td>
+                  <td>OpenAI text-embedding-3-small (1536d)</td>
+                </tr>
+                <tr>
+                  <td><strong>Reinforcement</strong></td>
+                  <td>None</td>
+                  <td>Hebbian (access_count + last_accessed_at)</td>
+                </tr>
+                <tr>
+                  <td><strong>Lifecycle</strong></td>
+                  <td>None (all notes equal)</td>
+                  <td>status filter (active/superseded/archived)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Infrastructure: healthy</h3>
+            <p>
+              76 memories in Supabase, up from 69 seeded &mdash; 7 new via dual-write today. The dual-write pipeline is working: new memories hit both the vault and Supabase. Both endpoints responding correctly: <code>search-memories</code> for retrieval, <code>embed-and-store</code> for capture.
+            </p>
+
+            <h3>Test data: thin</h3>
+            <p>
+              Only 3 entries in the activation log so far:
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Query</th>
+                  <th>Top Score</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>&ldquo;baileys bridge deprecated&rdquo;</td>
+                  <td>0.080</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>&ldquo;dual write test verification&rdquo;</td>
+                  <td>0.114</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>&ldquo;A/B test activation log memory retrieval&rdquo;</td>
+                  <td>0.036</td>
+                  <td>5</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Three data points. Not much to draw conclusions from. Day 1 was mostly other work &mdash; not heavy memory-retrieval sessions.
+            </p>
+          </section>
+
+          <hr class="section-separator">
+
+          <!-- Observations -->
+          <section id="observations" class="section fade-in">
+            <h2>Observations</h2>
+
+            <h3>Live comparison</h3>
+            <p>
+              We ran both systems on the same query. Here&rsquo;s what happened:
+            </p>
+            <p>
+              <strong>QMD</strong> found the actual A/B test protocol, the implementation plan, CLAUDE.md, PROJECT-MEMORY.md &mdash; the documents <em>about</em> the test. Strong on project-level search.
+            </p>
+            <p>
+              <strong>activate()</strong> found related memories &mdash; a Lia bugs incident, a Murmur architecture decision, a token optimization decision. Relevant context, but nothing directly about the A/B test itself.
+            </p>
+            <p>
+              Why the difference? The Supabase brain only has Memory/ folder content (76 files). QMD indexes the entire vault &mdash; hundreds of files across projects, research, and personal notes. For project docs and research, QMD wins by default because Supabase simply doesn&rsquo;t have that content.
+            </p>
+
+            <h3>Three things worth watching</h3>
+            <p>
+              <strong>Scores are low.</strong> All under 0.12. Could be normal for ACT-R decay on fresh memories &mdash; low access counts mean low activation &mdash; but worth tracking as the corpus grows.
+            </p>
+            <p>
+              <strong>The logging gap.</strong> The <code>activation_log</code> table only tracks <code>activate()</code> calls. It doesn&rsquo;t log the QMD side, so there&rsquo;s no built-in side-by-side comparison. We&rsquo;re relying on noting differences inline during sessions.
+            </p>
+            <p>
+              <strong>Different scopes.</strong> QMD searches the whole vault. Supabase only has memories. They&rsquo;re not competing on equal ground. Supabase should shine for memory-specific retrieval &mdash; corrections, decisions, facts &mdash; while QMD handles everything else.
+            </p>
+          </section>
+
+          <hr class="section-separator">
+
+          <!-- Verdict -->
+          <section id="verdict" class="section fade-in">
+            <h2>Verdict</h2>
+            <p>
+              Too early to judge performance. Three data points isn&rsquo;t enough. The plumbing works, the dual-write is live, but we need more retrieval-heavy sessions to get meaningful signal. The real test will come when we&rsquo;re deep in a project and need to recall past decisions or corrections quickly.
+            </p>
+            <p>
+              13 more days until the checkpoint (March 23). We&rsquo;ll get there.
+            </p>
+          </section>
+
+        </article>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-text">&copy; 2026 h. theo m&ouml;ller</span>
+      <span class="footer-text"><a href="about.html">About</a></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Sidebar expand/collapse
+    document.querySelectorAll('.sidebar-section-header[data-section]').forEach(header => {
+      header.addEventListener('click', (e) => {
+        e.preventDefault();
+        header.parentElement.classList.toggle('expanded');
+      });
+    });
+
+    // Active sidebar link tracking
+    const sections = document.querySelectorAll('.section[id]');
+    const chapterLinks = document.querySelectorAll('.sidebar-chapters a[href^="#"]');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          chapterLinks.forEach(link => link.classList.remove('active'));
+          const activeLink = document.querySelector(`.sidebar-chapters a[href="#${entry.target.id}"]`);
+          if (activeLink) activeLink.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '-80px 0px -60% 0px' });
+    sections.forEach(section => sectionObserver.observe(section));
+  </script>
+
+</body>
+</html>
