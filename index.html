@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H. Theo M&ouml;ller — Murmur: An Operating Concept</title>
+  <title>H. Theo M&ouml;ller &mdash; Murmur</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,26 +32,26 @@
         <div class="sidebar-folder-content">
           <div class="sidebar-tree">
             <div class="sidebar-section expanded">
-              <a class="sidebar-section-header" href="murmur.html">
+              <a class="sidebar-section-header active" href="index.html">
                 Murmur <span class="chevron">&#x25BE;</span>
               </a>
               <div class="sidebar-chapters">
-                <div class="sidebar-section expanded">
+                <div class="sidebar-section">
                   <a class="sidebar-section-header" data-section="concept">
                     Operating Concept <span class="chevron">&#x25BE;</span>
                   </a>
                   <div class="sidebar-chapters">
-                    <a href="#abstract"><span class="nav-number"></span> Abstract</a>
-                    <a href="#problem"><span class="nav-number">01</span> The Problem</a>
-                    <a href="#medium"><span class="nav-number">02</span> The Medium</a>
-                    <a href="#memory"><span class="nav-number">03</span> The Memory</a>
-                    <a href="#bridge"><span class="nav-number">04</span> The Bridge</a>
-                    <a href="#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
-                    <a href="#model"><span class="nav-number">06</span> The Model</a>
-                    <a href="#universality"><span class="nav-number">07</span> Universality</a>
-                    <a href="#not"><span class="nav-number">08</span> What It Is Not</a>
-                    <a href="#conclusion"><span class="nav-number">09</span> Conclusion</a>
-                    <a href="#references"><span class="nav-number"></span> References</a>
+                    <a href="concept.html#abstract"><span class="nav-number"></span> Abstract</a>
+                    <a href="concept.html#problem"><span class="nav-number">01</span> The Problem</a>
+                    <a href="concept.html#medium"><span class="nav-number">02</span> The Medium</a>
+                    <a href="concept.html#memory"><span class="nav-number">03</span> The Memory</a>
+                    <a href="concept.html#bridge"><span class="nav-number">04</span> The Bridge</a>
+                    <a href="concept.html#behaviors"><span class="nav-number">05</span> Five Behaviors</a>
+                    <a href="concept.html#model"><span class="nav-number">06</span> The Model</a>
+                    <a href="concept.html#universality"><span class="nav-number">07</span> Universality</a>
+                    <a href="concept.html#not"><span class="nav-number">08</span> What It Is Not</a>
+                    <a href="concept.html#conclusion"><span class="nav-number">09</span> Conclusion</a>
+                    <a href="concept.html#references"><span class="nav-number"></span> References</a>
                   </div>
                 </div>
                 <div class="sidebar-section">
@@ -77,11 +77,11 @@
           </div>
         </div>
 
-        <div class="sidebar-tree-label">journal</div>
+        <div class="sidebar-tree-label">Journal</div>
         <div class="sidebar-tree">
           <div class="sidebar-section">
             <a class="sidebar-section-header" href="journal.html">
-              <span class="journal-date">2026-03-10</span> Building a Memory System
+              <span class="journal-date">2026-03-10</span>Building a Memory System
             </a>
           </div>
         </div>
@@ -95,436 +95,23 @@
     <main class="main">
       <div class="main-inner">
 
-        <!-- Hero -->
         <section class="hero">
-          <h1>Murmur: An Operating Concept</h1>
+          <h1>Murmur: An Experiment in Collective Memory</h1>
           <p class="tagline">
-            How a conversational knowledge bridge works, and why.
+            A framework to turn conversations into queryable memories.
           </p>
         </section>
 
-        <!-- Abstract -->
-        <section id="abstract" class="section fade-in">
-          <h2>Abstract</h2>
+        <section class="section fade-in">
           <p>
-            Murmur is an attempt to convert team conversation into collective memory and proactive behavior. This document describes the theoretical model behind the system: why conversation is the natural medium for organizational knowledge, how shared memory forms from individual contributions, what makes certain behaviors universally applicable across domains, and how bridging unstructured conversation with structured tooling addresses a problem that neither side can solve alone.
+            People talk on WhatsApp, the system listens and remembers. No forms, no data entry. Conversation becomes lasting, searchable knowledge.
           </p>
           <p>
-            The argument draws on four bodies of literature: transactive memory systems (Wegner, 1987), the organizational knowledge creation spiral (Nonaka &amp; Takeuchi, 1995), distributed cognition (Hutchins, 1995), and organizational memory theory (Walsh &amp; Ungson, 1991). These frameworks were developed independently across cognitive psychology, management science, and cognitive science, but they converge on the same observation. Knowledge in organizations is not a thing to be stored. It is a process to be sustained.
+            It bridges where knowledge gets created (conversation) and where it needs to live (Jira, Airtable, Calendar), connecting both through semantic search and five proactive behaviors: remind, track, alert, summarize, follow up.
           </p>
           <p>
-            That is the problem Murmur tries to solve.
+            Murmur is not a startup. It&rsquo;s a personal project, a curious investigation. The most valuable knowledge in any team is the kind that disappears. This site documents the concept, the architecture, and what it actually looks like to build this thing one step at a time.
           </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 1. The Problem -->
-        <section id="problem" class="section fade-in">
-          <span class="section-number">01</span>
-          <h2>The Problem: Knowledge That Falls Between the Cracks</h2>
-          <p>
-            Every organization produces two kinds of knowledge. The first is <strong>explicit knowledge</strong>, documented and stored in tools. Jira tickets, Airtable records, Notion pages, Google Docs. Visible, queryable, durable. Organizations spend enormous effort creating and maintaining it.
-          </p>
-          <p>
-            The second is <strong>tacit knowledge</strong>: the context, reasoning, preferences, and institutional memory that live in people&rsquo;s heads and in their conversations. Why a decision was made. What a client actually wants beyond what the brief says. Who knows how to fix the production server at 2 AM. What happened the last time someone tried this approach. Nonaka (1994) defines tacit knowledge as &ldquo;personal, context-specific, and hard to formalize.&rdquo; It resists being written down because its value is inseparable from the context in which it emerged.
-          </p>
-          <p>
-            The problem is not that organizations lack knowledge. The most valuable knowledge, the tacit kind, is the least durable. It lives in conversations that scroll past, in meetings that no one summarizes, in hallway exchanges that no one records. When someone leaves the team, their tacit knowledge leaves with them. When a conversation scrolls off the screen, the decision it contained is effectively lost.
-          </p>
-          <p>
-            Walsh and Ungson (1991) identified five &ldquo;retention bins&rdquo; for organizational memory: individuals, culture, transformations, structures, and ecology. Individuals are the most fragile. Culture and structure are the most durable but the hardest to change. The gap between where knowledge is <em>created</em> (in individuals, through conversation) and where it needs to <em>persist</em> (in structures and tools) is the central problem of organizational knowledge management.
-          </p>
-          <p>
-            That gap is what Murmur is built around.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 2. The Medium -->
-        <section id="medium" class="section fade-in">
-          <span class="section-number">02</span>
-          <h2>The Medium: Why Conversation Is the Natural Substrate</h2>
-          <p>
-            Most knowledge management systems start with a premise: if people would just document what they know, the organization would remember. This premise is empirically false. Documentation requires effort, discipline, and a context switch from working to recording. People do it reluctantly and inconsistently. Not because they&rsquo;re lazy, but because formalizing tacit knowledge strips it of the context that makes it meaningful.
-          </p>
-          <p>
-            Nonaka and Takeuchi&rsquo;s SECI model (1995) describes four modes of knowledge conversion:
-          </p>
-          <ul>
-            <li><strong>Socialization</strong>: tacit &rarr; tacit. Shared experience, observation, apprenticeship.</li>
-            <li><strong>Externalization</strong>: tacit &rarr; explicit. Articulating mental models through dialogue, metaphor, analogy.</li>
-            <li><strong>Combination</strong>: explicit &rarr; explicit. Systemizing concepts into a knowledge system.</li>
-            <li><strong>Internalization</strong>: explicit &rarr; tacit. Learning by doing, absorbing documented knowledge into practice.</li>
-          </ul>
-          <p>
-            The critical transition for organizational memory is <strong>externalization</strong>, the moment when something known implicitly becomes expressed explicitly. Nonaka&rsquo;s key insight: this transition happens primarily through <em>dialogue</em>. Not through forms, not through data entry, not through documentation portals. Through talking.
-          </p>
-          <p>
-            A team member says &ldquo;Jo&atilde;o said he&rsquo;d handle the permit by Friday.&rdquo; That&rsquo;s a commitment, externalized. Someone else mentions &ldquo;we tried that approach last year and it didn&rsquo;t work because the API rate limits were too strict.&rdquo; That&rsquo;s institutional memory, now on the record. A foreman texts &ldquo;we have 12 bags of cement left.&rdquo; Operational state, spoken into existence.
-          </p>
-          <p>
-            These utterances happen naturally and without effort. They are the raw material of organizational knowledge, and in most organizations, they vanish within hours.
-          </p>
-          <p>
-            Murmur&rsquo;s foundational design choice is to treat <strong>conversation as the capture surface</strong>. The primary medium through which organizational knowledge is created, shared, and preserved. The user never &ldquo;enters data.&rdquo; They talk, as they always have. The system listens, interprets, and remembers.
-          </p>
-          <p>
-            This is not a technical convenience. Knowledge management research going back to the 1980s consistently shows that the most valuable organizational knowledge is created through dialogue. Any system that requires a different medium for capture will systematically miss it.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 3. The Memory -->
-        <section id="memory" class="section fade-in">
-          <span class="section-number">03</span>
-          <h2>The Memory: How a Collective Brain Forms</h2>
-
-          <h3>3.1. Transactive Memory and the Division of Cognitive Labor</h3>
-          <p>
-            Wegner (1987) introduced the concept of <strong>transactive memory</strong> to describe how couples and groups develop shared systems for encoding, storing, and retrieving knowledge. In a transactive memory system, individuals don&rsquo;t need to remember everything. They need to remember <em>who knows what</em>. Each person holds some knowledge directly and holds pointers to what others know.
-          </p>
-          <p>
-            Healthy teams develop transactive memory organically. A project manager knows the designer remembers the client&rsquo;s color preferences. A senior engineer knows the intern documented the deployment process. The knowledge itself is distributed; the index is shared.
-          </p>
-          <p>
-            This system is powerful but fragile. It depends on <strong>co-presence</strong> (people must interact regularly to maintain the index), <strong>stability</strong> (when members leave, their knowledge and their position in the index disappear simultaneously), and <strong>human memory</strong> (the index itself exists in people&rsquo;s heads, subject to forgetting, distortion, and interference).
-          </p>
-          <p>
-            Murmur is an <strong>externalized transactive memory system</strong>. It takes the two functions of transactive memory, <em>knowing facts</em> and <em>knowing who knows what</em>, and makes both persistent, queryable, and independent of any individual&rsquo;s presence. When someone says &ldquo;Maria mentioned that the client prefers warm tones,&rdquo; the system stores both the fact (client prefers warm tones) and the attribution (Maria said this). When Maria leaves the company, her knowledge stays.
-          </p>
-          <p>
-            The memories table, with its content, author, category, visibility, and embedding columns, is the externalized equivalent of what Wegner called the &ldquo;group mind.&rdquo; A collectively constructed memory that exceeds any individual&rsquo;s capacity and survives any individual&rsquo;s departure.
-          </p>
-
-          <h3>3.2. The Collective Brain as Organizational Memory</h3>
-          <p>
-            Walsh and Ungson (1991) argued that organizational memory has three functions: <strong>informational</strong> (storing facts), <strong>control</strong> (maintaining procedures and norms), and <strong>political</strong> (preserving the power dynamics encoded in institutional knowledge). Most knowledge management systems address only the informational function. Murmur, by capturing decisions, context, and reasoning alongside facts, also preserves the control and political dimensions. Why things are done a certain way, not just what is done.
-          </p>
-          <p>
-            The &ldquo;collective brain&rdquo; metaphor describes a specific architectural property: the system&rsquo;s knowledge is greater than the sum of individual contributions, because the system performs operations on the aggregate that no individual could perform alone. It synthesizes across conversations that happened at different times, between different people, about related topics. It detects contradictions between what Person A said last week and what Person B said today. It surfaces connections that no single team member would notice, because no single team member witnessed all the relevant conversations.
-          </p>
-          <p>
-            This is not intelligence in the artificial sense. It is what happens when you build a well-indexed, semantically searchable collective memory. Wegner saw the same property in transactive memory systems. The difference is scale and durability: a database doesn&rsquo;t forget, and it doesn&rsquo;t leave the company.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 4. The Bridge -->
-        <section id="bridge" class="section fade-in">
-          <span class="section-number">04</span>
-          <h2>The Bridge: Connecting Conversation to Structure</h2>
-
-          <h3>4.1. Distributed Cognition and the Tool Ecosystem</h3>
-          <p>
-            Hutchins (1995) demonstrated that cognition in complex systems is not confined to individual minds. His canonical example is a naval ship&rsquo;s navigation team. The speed card pinned to the cockpit dashboard is as much a part of the cognitive system as the navigator reading it. The artifacts carry knowledge, and they shape how the crew thinks and acts.
-          </p>
-          <p>
-            In a modern team, those artifacts are digital. Jira boards, Airtable bases, Google Calendars, Notion wikis, Slack channels. The project status sits in Jira, client requirements in Notion, the schedule in Calendar. But the informal reasoning about why a deadline was moved? That lives in a WhatsApp message that scrolled past three days ago.
-          </p>
-          <p>
-            The problem with distributed cognition is not distribution itself. It is <strong>fragmentation</strong>. When the cognitive system is spread across twelve tools with no shared memory, querying the system requires querying each tool separately and synthesizing the results in the human mind. &ldquo;What&rsquo;s the status of the permit?&rdquo; requires checking Jira for the ticket, Calendar for the deadline, WhatsApp for the conversation about why it&rsquo;s stuck, and the project manager&rsquo;s memory for the context that never got documented.
-          </p>
-          <p>
-            Murmur addresses this through the <strong>knowledge bridge</strong> pattern. The system sits between two layers:
-          </p>
-          <ul>
-            <li><strong>Below</strong>: the conversational layer, where knowledge is created naturally through dialogue.</li>
-            <li><strong>Above</strong>: the tool layer, where structured data lives in purpose-built applications.</li>
-          </ul>
-          <p>
-            Murmur captures knowledge from below (conversation) and connects to structure above (tools via MCP, the Model Context Protocol). When someone asks &ldquo;what&rsquo;s the status of the permit?&rdquo;, the system can draw from both layers: the Jira ticket status (structured, from the tool) AND the conversation from last week about why the city inspector postponed the visit (unstructured, from memory).
-          </p>
-
-          <h3>4.2. Why the Bridge Is Necessary</h3>
-          <p>
-            Neither layer alone is sufficient.
-          </p>
-          <p>
-            <strong>Conversation without structure</strong> is ephemeral. Messages scroll past. Context is lost. There is no reliable way to ask &ldquo;what are all open commitments?&rdquo; because commitments exist only as fragments scattered across hundreds of messages. The LLM can interpret individual messages, but it cannot reliably aggregate across thousands without structured backing.
-          </p>
-          <p>
-            <strong>Structure without conversation</strong> is incomplete. Jira knows the ticket exists but not why it&rsquo;s blocked. Airtable knows the client&rsquo;s name but not that they mentioned in passing that they hate the color blue. Google Calendar knows the meeting is at 3 PM but not that the team decided during lunch to move it because the designer has a conflict. The structured layer captures what was deliberately entered; the conversational layer captures everything that was said.
-          </p>
-          <p>
-            The bridge is not a convenience. It is a theoretical necessity. Formal systems capture explicit knowledge. Conversation captures tacit knowledge. Neither is complete without the other.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 5. Five Behaviors -->
-        <section id="behaviors" class="section fade-in">
-          <span class="section-number">05</span>
-          <h2>The Five Behaviors: A Taxonomy of Proactive Intelligence</h2>
-
-          <h3>5.1. From Reactive to Proactive</h3>
-          <p>
-            Traditional knowledge systems are reactive. You query them; they answer. This models the informational function of organizational memory (Walsh &amp; Ungson, 1991) but ignores the control function, the role memory plays in actively shaping behavior, enforcing commitments, and keeping the organization coherent.
-          </p>
-          <p>
-            Murmur&rsquo;s reactive layer, <strong>Query</strong>, is the foundation. The ability to ask &ldquo;what do we know about X?&rdquo; and receive a coherent answer drawn from both conversation and tools is the baseline capability. This is Layer 0.
-          </p>
-          <p>
-            Layer 1 is what distinguishes Murmur from a search engine. It consists of five <strong>proactive behaviors</strong>, actions the system takes without being asked, based on patterns it detects in accumulated knowledge. These are not an arbitrary feature list. They are a <strong>complete taxonomy of proactive triggers</strong>, each corresponding to a distinct stimulus that should cause a knowledge system to act:
-          </p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Behavior</th>
-                <th>Trigger Type</th>
-                <th>Formal Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Remind</strong></td>
-                <td>Temporal</td>
-                <td>At time <em>t</em>, surface information <em>I</em> to person <em>P</em></td>
-              </tr>
-              <tr>
-                <td><strong>Track</strong></td>
-                <td>Pattern</td>
-                <td>When utterance matches pattern <em>&pi;</em>, extract and store as category <em>C</em></td>
-              </tr>
-              <tr>
-                <td><strong>Alert</strong></td>
-                <td>Conditional</td>
-                <td>When state <em>S</em> satisfies condition <em>&phi;</em>, notify person <em>P</em></td>
-              </tr>
-              <tr>
-                <td><strong>Summarize</strong></td>
-                <td>Periodic</td>
-                <td>At interval <em>&Delta;t</em>, compile category <em>C</em> for audience <em>A</em></td>
-              </tr>
-              <tr>
-                <td><strong>Follow up</strong></td>
-                <td>Absence</td>
-                <td>If commitment <em>K</em> not updated within duration <em>d</em>, prompt person <em>P</em></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>5.2. Why Exactly Five</h3>
-          <p>
-            The claim is not that five is an aesthetically pleasing number. The claim is that these five trigger types are <strong>mutually exclusive and collectively exhaustive</strong> for the domain of proactive knowledge behaviors.
-          </p>
-          <p>
-            They are mutually exclusive because each trigger type is categorically distinct:
-          </p>
-          <p>
-            <strong>Temporal</strong> triggers fire at a predetermined time. Deterministic and user-initiated. &ldquo;Remind me at 3 PM.&rdquo;
-          </p>
-          <p>
-            <strong>Pattern</strong> triggers fire when incoming information matches a recognition template. Event-driven and continuous. &ldquo;Whenever someone mentions a deadline, capture it.&rdquo;
-          </p>
-          <p>
-            <strong>Conditional</strong> triggers fire when a monitored state crosses a threshold. State-driven and evaluative. &ldquo;When inventory drops below 10, alert the manager.&rdquo;
-          </p>
-          <p>
-            <strong>Periodic</strong> triggers fire at regular intervals regardless of events. Scheduled and aggregative. &ldquo;Every Friday, compile a project summary.&rdquo;
-          </p>
-          <p>
-            <strong>Absence</strong> triggers fire when an expected event <em>fails to occur</em>. Counterfactual and accountability-oriented. &ldquo;If Jo&atilde;o hasn&rsquo;t confirmed the delivery by Wednesday, ask him.&rdquo;
-          </p>
-          <p>
-            They are collectively exhaustive because any proactive action a knowledge system could take falls into one of these categories. Consider candidates that initially seem to fall outside the taxonomy:
-          </p>
-          <ul>
-            <li>&ldquo;Suggest an approach based on past decisions&rdquo; &rarr; Conditional trigger (condition: similar context detected).</li>
-            <li>&ldquo;Escalate an unresolved issue to the manager&rdquo; &rarr; Absence trigger (absence: resolution within timeframe).</li>
-            <li>&ldquo;Connect two related conversations&rdquo; &rarr; Pattern trigger (pattern: semantic similarity above threshold).</li>
-            <li>&ldquo;Warn about a contradiction&rdquo; &rarr; Conditional trigger (condition: new information conflicts with existing memory).</li>
-          </ul>
-          <p>
-            Each apparent exception reduces to one of the five trigger types.
-          </p>
-
-          <h3>5.3. Cross-Framework Validation</h3>
-          <p>
-            The five behaviors map cleanly to established frameworks:
-          </p>
-          <p>
-            Allen&rsquo;s <strong>GTD</strong> (2001) maps almost directly: Capture is <strong>Track</strong>, Reflect is <strong>Summarize</strong>, and Engage covers <strong>Remind</strong>, <strong>Alert</strong>, and <strong>Follow up</strong>. The SECI model&rsquo;s externalization phase (Nonaka &amp; Takeuchi, 1995) is exactly what <strong>Track</strong> does, turning tacit knowledge explicit through capture, while <strong>Summarize</strong> handles the combination phase, recombining explicit knowledge into digests.
-          </p>
-          <p>
-            From a distributed cognition perspective (Hutchins, 1995), the behaviors describe how representations move through the system. Track pulls information inward from conversation to memory. Remind, Alert, and Follow up push it outward from memory to people. Summarize transforms it, compressing many memories into something coherent. Walsh and Ungson&rsquo;s (1991) organizational memory framework splits along the same lines, with Track and Query serving the informational function and the remaining three serving control.
-          </p>
-          <p>
-            Four independent frameworks, all pointing at the same structure. That&rsquo;s not a coincidence.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 6. The Operating Model -->
-        <section id="model" class="section fade-in">
-          <span class="section-number">06</span>
-          <h2>The Operating Model: How It All Fits Together</h2>
-
-          <h3>6.1. The Three Layers</h3>
-          <p>
-            Murmur&rsquo;s operating concept consists of three layers, each corresponding to a theoretical function:
-          </p>
-
-<pre class="ascii-diagram">&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
-&#x2502;              TOOL LAYER (Structure)              &#x2502;
-&#x2502;  Jira &middot; Airtable &middot; Calendar &middot; Notion &middot; GitHub   &#x2502;
-&#x2502;         Connected via MCP (read + write)         &#x2502;
-&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;
-&#x2502;             MURMUR CORE (Memory)                 &#x2502;
-&#x2502;                                                  &#x2502;
-&#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;   &#x2502;
-&#x2502;  &#x2502;  Layer 0: QUERY (reactive retrieval)      &#x2502;   &#x2502;
-&#x2502;  &#x2502;  &ldquo;What do we know about X?&rdquo;               &#x2502;   &#x2502;
-&#x2502;  &#x2502;  &rarr; Semantic search + structured lookup    &#x2502;   &#x2502;
-&#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;   &#x2502;
-&#x2502;                                                  &#x2502;
-&#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;   &#x2502;
-&#x2502;  &#x2502;  Layer 1: BEHAVIORS (proactive)           &#x2502;   &#x2502;
-&#x2502;  &#x2502;  Remind &middot; Track &middot; Alert &middot; Summarize &middot;     &#x2502;   &#x2502;
-&#x2502;  &#x2502;  Follow up                                &#x2502;   &#x2502;
-&#x2502;  &#x2502;  &rarr; Five trigger evaluators running        &#x2502;   &#x2502;
-&#x2502;  &#x2502;    continuously against memory + tools    &#x2502;   &#x2502;
-&#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;   &#x2502;
-&#x2502;                                                  &#x2502;
-&#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;   &#x2502;
-&#x2502;  &#x2502;  Memory Store                             &#x2502;   &#x2502;
-&#x2502;  &#x2502;  Semantic (memories table + embeddings)   &#x2502;   &#x2502;
-&#x2502;  &#x2502;  Structured (commitments, reminders,      &#x2502;   &#x2502;
-&#x2502;  &#x2502;             alert_rules, summaries)        &#x2502;   &#x2502;
-&#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;   &#x2502;
-&#x251C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;
-&#x2502;          CONVERSATION LAYER (Capture)            &#x2502;
-&#x2502;     WhatsApp &middot; (later: Slack &middot; Teams)            &#x2502;
-&#x2502;         Natural language in, meaning out          &#x2502;
-&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</pre>
-
-          <h3>6.2. The Knowledge Cycle</h3>
-          <p>
-            The system operates as a continuous cycle with four phases.
-          </p>
-          <p>
-            It starts with <strong>capture</strong>. A team member sends a message on WhatsApp. The LLM interprets it, not to respond, but to evaluate. Does this message contain knowledge worth preserving? A commitment, a decision, a fact, a preference, a deadline?
-          </p>
-          <p>
-            If so, the system <strong>stores</strong> it. The semantic store receives a natural-language memory with embeddings for future retrieval. If the LLM can extract structured data (a date, an assignee, a status), companion tables get that too. This is Nonaka&rsquo;s externalization happening automatically, tacit knowledge becoming explicit, without effort from the speaker.
-          </p>
-          <p>
-            Meanwhile, the five behavior <strong>evaluators</strong> run continuously against the memory store and connected tools. Are any reminders due? Did an incoming message match a recognition pattern? Has a monitored state crossed a threshold? Is a summary scheduled? Has a commitment gone stale?
-          </p>
-          <p>
-            When an evaluator fires, the system <strong>acts</strong>. It generates a proactive message and delivers it to the right person through the conversation layer. A reminder surfaces, an alert fires, a follow-up nudges. The cycle continues.
-          </p>
-
-          <h3>6.3. The Role of the LLM</h3>
-          <p>
-            The large language model is not the product. It is the <strong>interpretive layer</strong> that makes the knowledge cycle possible.
-          </p>
-          <p>
-            During capture, it interprets natural language to extract structured meaning. &ldquo;Jo&atilde;o will handle the permit by Friday&rdquo; becomes a commitment with an assignee, a task, and a due date. During queries, it synthesizes across multiple memories and tool states. &ldquo;What&rsquo;s the status of the permit?&rdquo; pulls together the Jira ticket, the calendar entry, and three relevant conversations into one coherent answer. And when behaviors fire, the LLM generates the actual messages. Not &ldquo;REMINDER: permit due Friday&rdquo; but a natural-language nudge calibrated to the recipient and the situation.
-          </p>
-          <p>
-            The LLM provides the intelligence. Murmur provides the memory, the structure, and the behavioral framework that makes that intelligence persistent and proactive rather than stateless and reactive.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 7. Universality -->
-        <section id="universality" class="section fade-in">
-          <span class="section-number">07</span>
-          <h2>Universality: Why This Works for Any Team</h2>
-
-          <h3>7.1. Domain Independence</h3>
-          <p>
-            The operating concept makes no assumptions about the team&rsquo;s domain. It assumes only that the team communicates through conversation (WhatsApp, Slack, Teams, the medium is irrelevant), that conversations contain knowledge worth preserving, that the team uses tools for structured work, and that the team would benefit from a system that remembers, connects, and proactively acts on their collective knowledge.
-          </p>
-          <p>
-            These assumptions hold for a veterinary clinic, a construction crew, a real estate agency, a marketing team, a software development team, and a wedding venue. The domain-specific intelligence comes from the LLM at interpretation time, not from the system&rsquo;s architecture. The architecture is domain-agnostic. The schema is universal. The behaviors are universal. The domain expertise is supplied by the model.
-          </p>
-
-          <h3>7.2. The Minimal Viable Knowledge System</h3>
-          <p>
-            Strip away everything domain-specific, tool-specific, or implementation-specific. What remains:
-          </p>
-          <ol>
-            <li><strong>A capture surface</strong> where knowledge enters naturally (conversation).</li>
-            <li><strong>A memory store</strong> where knowledge persists (semantic + structured).</li>
-            <li><strong>A reactive layer</strong> for retrieval (Query).</li>
-            <li><strong>A proactive layer</strong> of five behaviors (Remind, Track, Alert, Summarize, Follow up).</li>
-            <li><strong>A bridge</strong> to existing structured tools (MCP).</li>
-          </ol>
-          <p>
-            This is the minimal viable knowledge system. Remove any component and something breaks. Take away capture and you&rsquo;re back to manual data entry, back to the compliance problem. Take away memory and you have a stateless chatbot. Take away Query and the system knows things but can&rsquo;t tell anyone. Behaviors are what make it active rather than passive. And the bridge is what keeps it from being yet another silo.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 8. What Murmur Is Not -->
-        <section id="not" class="section fade-in">
-          <span class="section-number">08</span>
-          <h2>What Murmur Is Not</h2>
-          <p>
-            Murmur is not a CRM, ERP, or project management tool. It does not replace Jira, Salesforce, or Monday.com. It connects to them. The structured tools remain the system of record for structured data. Murmur is the system of record for everything that falls between the cracks. The context, the reasoning, the preferences, the institutional memory that structured tools cannot capture.
-          </p>
-          <p>
-            It is not a chatbot. A chatbot waits for input. Murmur initiates. It watches, remembers, and acts. Answering questions on demand is the baseline, not the point.
-          </p>
-          <p>
-            It is not a general-purpose AI assistant. It does not write emails, generate images, or help with homework. It has a specific function, organizational knowledge management, performed through a specific medium, conversation.
-          </p>
-          <p>
-            And it is not a data system. It captures knowledge, not data. The distinction matters. Data is precise, structured, and context-free: &ldquo;inventory count: 47 units.&rdquo; Knowledge is contextual, interpretive, and meaning-laden: &ldquo;we&rsquo;re running low on the strawberry gelato, Maria said the supplier is having issues, so we should order extra next time.&rdquo; Databases handle data well. The contextual, messy, human layer is what Murmur is for.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- 9. Conclusion -->
-        <section id="conclusion" class="section fade-in">
-          <span class="section-number">09</span>
-          <h2>Conclusion: Memory as Infrastructure</h2>
-          <p>
-            The operating concept rests on a simple thesis. <strong>The most valuable organizational knowledge is created through conversation, and no existing system preserves it.</strong>
-          </p>
-          <p>
-            Email archives are searchable but unstructured. Slack has context but it scrolls away. Meeting transcripts capture everything and process nothing. CRMs log interactions but miss the insight behind them. And knowledge bases? They require manual entry, which means they&rsquo;re always half-empty.
-          </p>
-          <p>
-            Murmur resolves this by treating conversation as the primary capture surface, applying an LLM as the interpretive layer, storing knowledge in a persistent memory with both semantic and structured dimensions, connecting to existing tools via an open protocol, and proactively acting on accumulated knowledge through five universal behaviors triggered by time, patterns, conditions, intervals, and absence.
-          </p>
-          <p>
-            None of the theoretical foundations are new. Wegner described transactive memory in 1987, Walsh and Ungson described organizational memory in 1991, Nonaka and Hutchins both published their key works in 1995. What&rsquo;s new is that the technology to implement these ideas finally exists. Large language models can interpret natural language. Embedding models enable semantic search. Open protocols like MCP connect to existing tools.
-          </p>
-          <p>
-            Murmur is not a new theory. It is established organizational knowledge theory, implemented, because the technology finally caught up.
-          </p>
-        </section>
-
-        <hr class="section-separator">
-
-        <!-- References -->
-        <section id="references" class="section fade-in">
-          <h2>References</h2>
-          <div class="references">
-            <p>Allen, D. (2001). <em>Getting Things Done: The Art of Stress-Free Productivity</em>. Penguin Books.</p>
-            <p>Argote, L., &amp; Ren, Y. (2012). Transactive Memory Systems: A Microfoundation of Dynamic Capabilities. <em>Journal of Management Studies</em>, 49(8).</p>
-            <p>Forte, T. (2022). <em>Building a Second Brain: A Proven Method to Organize Your Digital Life</em>. Atria Books.</p>
-            <p>Hutchins, E. (1995). <em>Cognition in the Wild</em>. MIT Press.</p>
-            <p>Hutchins, E. (1995). How a Cockpit Remembers Its Speeds. <em>Cognitive Science</em>, 19(3), 265-288.</p>
-            <p>Mehrotra, A., &amp; Musolesi, M. (2017). Intelligent Notification Systems: A Survey of the State of the Art and Research Challenges. <em>arXiv:1711.10171</em>.</p>
-            <p>Moreland, R. L. (2006). Transactive Memory: Learning Who Knows What in Work Groups and Organizations. In J. M. Levine &amp; R. L. Moreland (Eds.), <em>Small Groups</em>. Psychology Press.</p>
-            <p>Nonaka, I. (1994). A Dynamic Theory of Organizational Knowledge Creation. <em>Organization Science</em>, 5(1), 14-37.</p>
-            <p>Nonaka, I., &amp; Takeuchi, H. (1995). <em>The Knowledge-Creating Company</em>. Oxford University Press.</p>
-            <p>Walsh, J. P., &amp; Ungson, G. R. (1991). Organizational Memory. <em>Academy of Management Review</em>, 16(1), 57-91.</p>
-            <p>Wegner, D. M. (1987). Transactive Memory: A Contemporary Analysis of the Group Mind. In B. Mullen &amp; G. R. Goethals (Eds.), <em>Theories of Group Behavior</em>. Springer-Verlag.</p>
-          </div>
         </section>
 
       </div>
@@ -564,21 +151,6 @@
         header.parentElement.classList.toggle('expanded');
       });
     });
-
-    // Active sidebar link tracking (current page sections only)
-    const sections = document.querySelectorAll('.section[id]');
-    const chapterLinks = document.querySelectorAll('.sidebar-chapters a[href^="#"]');
-
-    const sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          chapterLinks.forEach(link => link.classList.remove('active'));
-          const activeLink = document.querySelector(`.sidebar-chapters a[href="#${entry.target.id}"]`);
-          if (activeLink) activeLink.classList.add('active');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '-80px 0px -60% 0px' });
-    sections.forEach(section => sectionObserver.observe(section));
 
     // Mobile menu toggle
     const menuToggle = document.querySelector('.menu-toggle');
